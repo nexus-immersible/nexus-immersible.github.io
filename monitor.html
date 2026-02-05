@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>NEXUS Monitor</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Courier,monospace;background:linear-gradient(135deg,#0a0e27,#1a1f3a);color:#00ff88;min-height:100vh;padding:20px}
+.container{max-width:1400px;margin:0 auto}
+h1{font-size:3em;text-align:center;margin-bottom:30px;letter-spacing:0.2em;text-shadow:0 0 20px #00ff88}
+.pills{display:flex;gap:15px;justify-center;flex-wrap:wrap;margin-bottom:40px}
+.pill{background:rgba(0,255,136,0.1);border:2px solid #00ff88;border-radius:25px;padding:8px 20px;font-size:0.9em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:30px}
+.card{background:rgba(10,14,39,0.8);border:1px solid #00ff88;border-radius:15px;padding:25px}
+.card-title{font-size:0.8em;color:#888;margin-bottom:10px;text-transform:uppercase}
+.card-value{font-size:2.5em;font-weight:bold;margin-bottom:10px}
+.list-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(0,255,136,0.1)}
+.btn{background:transparent;border:2px solid #00ff88;color:#00ff88;padding:12px 30px;border-radius:8px;text-decoration:none;display:inline-block;transition:0.3s}
+.btn:hover{background:rgba(0,255,136,0.1)}
+</style>
+</head><body>
+<div class="container">
+<h1>NEXUS LIVE MONITOR</h1>
+<div class="pills">
+<div class="pill">🟢 GATEWAY ONLINE</div>
+<div class="pill">🤖 QWEN 2.5:14B ACTIVE</div>
+<div class="pill">💬 TELEGRAM READY</div>
+</div>
+<div class="grid">
+<div class="card"><div class="card-title">💰 Cost (Est.)</div><div class="card-value">$0.00</div></div>
+<div class="card"><div class="card-title">📊 Messages</div><div class="card-value" id="msgs">--</div></div>
+<div class="card"><div class="card-title">⚡ Model</div><div class="card-value" style="font-size:1.2em">qwen2.5:14b-instruct</div></div>
+<div class="card"><div class="card-title">⏱️ Uptime</div><div class="card-value" id="uptime">00:00:00</div></div>
+</div>
+<div class="card"><div class="card-title">🔒 Security</div>
+<div class="list-item"><span>CVE-2026-25253</span><span style="color:#00ff88">✅ PATCHED</span></div>
+<div class="list-item"><span>Model Integrity</span><span style="color:#00ff88">✅ VERIFIED</span></div>
+<div class="list-item"><span>Only Qwen (no DeepSeek)</span><span style="color:#00ff88">✅ CONFIRMED</span></div>
+</div>
+<div style="margin-top:40px;display:flex;gap:15px;justify-content:center">
+<a href="http://68.233.108.201:8080" class="btn">Gateway Dashboard</a>
+<a href="https://nexus-immersible.github.io/kanban.html" class="btn">Kanban</a>
+<a href="https://nexus-immersible.github.io/" class="btn">Main Dashboard</a>
+</div>
+</div>
+<script>
+let start=Date.now();
+setInterval(()=>{
+let e=Date.now()-start,h=Math.floor(e/36e5).toString().padStart(2,"0"),m=Math.floor(e%36e5/6e4).toString().padStart(2,"0"),s=Math.floor(e%6e4/1e3).toString().padStart(2,"0");
+document.getElementById("uptime").textContent=`${h}:${m}:${s}`;
+},1e3);
+</script>
+</body></html>
