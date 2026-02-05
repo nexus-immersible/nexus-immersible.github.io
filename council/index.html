@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satya - AI LLM Council</title>
+    <link rel="stylesheet" href="main.css?v=6.2.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Login Overlay - Google Sign In (hidden by default to prevent flash) -->
+    <div id="login-overlay" style="
+        position: fixed;
+        inset: 0;
+        background: #0a0a0f;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    ">
+        <div
+            style="width: 100%; max-width: 320px; padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+            <!-- Logo -->
+            <img src="logo.png"
+                style="width: 80px; height: 80px; border-radius: 16px; margin-bottom: 24px; object-fit: cover; box-shadow: 0 0 40px rgba(0, 221, 179, 0.2);">
+            <h2 style="color: #fff; font-size: 24px; margin: 0 0 8px; font-family: Inter, sans-serif;">Satya</h2>
+            <p
+                style="color: #888; font-size: 14px; margin: 0 0 32px; font-family: Inter, sans-serif; line-height: 1.5;">
+                AI LLM Council for Decision Support
+            </p>
+
+            <!-- Google Login Button -->
+            <!-- Note: Event listener is attached in app.js for robustness -->
+            <button id="overlay-google-login-btn" style="
+                width: 100%; padding: 12px 20px; background: #fff; border: none;
+                border-radius: 24px; color: #3c4043; font-size: 15px; font-weight: 500;
+                font-family: 'Roboto', sans-serif; cursor: pointer;
+                display: flex; align-items: center; justify-content: center; gap: 12px;
+                transition: all 0.2s ease;
+            ">
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        fill="#4285F4"></path>
+                    <path
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        fill="#34A853"></path>
+                    <path
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        fill="#FBBC05"></path>
+                    <path
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        fill="#EA4335"></path>
+                </svg>
+                Sign in with Google
+            </button>
+
+            <p id="login-status" style="color: #666; font-size: 13px; margin-top: 16px; min-height: 20px;">
+                Secure authentication via Firebase
+            </p>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden by default until login) -->
+    <script>
+        // Check if already authenticated via previous session not handled here anymore
+        // Authorization is now handled by app.js via Firebase onAuthStateChanged
+    </script>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <!-- Instagram-style Logo -->
+            <!-- Instagram-style Logo -->
+            <div class="logo satya-brand" onclick="switchTab('council')">
+                <img src="satya-logo.png" class="logo-img">
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab" data-tab="superchat">
+                    <svg class="mode-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Super Chat
+                </button>
+                <button class="nav-tab active" data-tab="council">
+                    <svg class="mode-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 12h8"></path>
+                        <path d="M12 8v8"></path>
+                    </svg>
+                    Council
+                </button>
+                <button class="nav-tab" data-tab="dxo">
+                    <svg class="mode-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    DxO
+                </button>
+                <button class="nav-tab" data-tab="ensemble">
+                    <svg class="mode-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="16 3 21 3 21 8"></polyline>
+                        <line x1="4" y1="20" x2="21" y2="3"></line>
+                        <polyline points="21 16 21 21 16 21"></polyline>
+                        <line x1="15" y1="15" x2="21" y2="21"></line>
+                        <polyline points="8 21 3 21 3 16"></polyline>
+                        <line x1="3" y1="21" x2="9" y2="15"></line>
+                    </svg>
+                    Ensemble
+                </button>
+                <button class="nav-tab" data-tab="benchmarks">
+                    <svg class="mode-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                        <path d="M4 22h16"></path>
+                        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                    </svg>
+                    Benchmarks
+                </button>
+                <button class="nav-tab" data-tab="leaderboard">
+                    <svg class="mode-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M12 20V10"></path>
+                        <path d="M18 20V4"></path>
+                        <path d="M6 20v-4"></path>
+                    </svg>
+                    Leaderboard
+                </button>
+                <button class="nav-tab" data-tab="history">
+                    <svg class="mode-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                    History
+                </button>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="ultra-mode-container" title="Top Benchmarked Free Models">
+                <button class="toggle-switch ultra-toggle" id="ultra-mode-toggle" onclick="toggleUltraFreeMode()">
+                    <div class="toggle-dot"></div>
+                </button>
+                <span class="mode-label">Ultra Free</span>
+            </div>
+            <!-- Firebase Auth Buttons -->
+            <button class="header-btn" id="google-login-btn" onclick="loginWithGoogle()"
+                style="display: flex; gap: 6px; align-items: center;">
+                <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        fill="#4285F4"></path>
+                    <path
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        fill="#34A853"></path>
+                    <path
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        fill="#FBBC05"></path>
+                    <path
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        fill="#EA4335"></path>
+                </svg>
+                style="display: none; gap: 6px; align-items: center;">
+                <span>Google</span>
+            </button>
+            <!-- Login Buttons (Hidden by default to prevent flash) -->
+            <button class="header-btn" id="firebase-login-btn" onclick="showLoginModal()" style="display: none;">
+                <span>Log In</span>
+            </button>
+            <button class="header-btn" id="firebase-register-btn" onclick="showRegisterModal()" style="display: none;">
+                <span>Sign Up</span>
+            </button>
+            <!-- Profile Avatar (shown when logged in) - opens Profile Panel -->
+            <div class="profile-avatar" id="profile-avatar" style="display: none; cursor: pointer;"
+                title="Profile & Settings">
+                <span id="profile-initial">?</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fullscreen Reader Overlay (double-tap to open/close) -->
+    <div id="fullscreen-reader" class="fullscreen-reader hidden" ondblclick="closeFullscreenReader()">
+        <button class="fullscreen-close-btn" onclick="closeFullscreenReader()">×</button>
+        <div class="fullscreen-content" id="fullscreen-content"></div>
+        <div class="fullscreen-hint">Double-tap to close</div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Council Mode -->
+        <section id="council-page" class="page active">
+            <div class="page-badge purple">
+                <span>⚡</span> Karpathy Pattern Implementation
+            </div>
+            <h1 class="page-title">AI LLM Council</h1>
+            <p class="page-description">
+                Send your prompt to multiple AI models simultaneously. Watch them deliberate, critique each other, and
+                synthesize the best response through a Chairman model.
+            </p>
+
+            <div class="card prompt-card">
+                <label class="card-label">Research Prompt</label>
+                <div class="input-wrapper">
+                    <textarea id="council-prompt" class="prompt-input"
+                        placeholder="Enter your research question or topic... e.g., 'What are the pros and cons of different database architectures for a high-traffic e-commerce platform?'"></textarea>
+                    <div class="input-actions">
+                        <button class="upload-btn" onclick="triggerUpload('council')" title="Upload Image/Document">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="council-attachments" class="attachments-preview"></div>
+                <div class="quick-prompts">
+                    <span class="quick-label">Try these:</span>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('council', 'Audit the TVL claims of [Protocol Name]. Verify on-chain data, flag any [DATA MISSING] items, and assess liquidity depth.')">🛡️
+                        Audit TVL</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('council', 'Conduct an RWA regulatory risk scan for [Project]. Flag SEC security classification risks, unverifiable claims, and distinguish utility vs security token status.')">⚖️
+                        RWA Regulatory Scan</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('council', 'Stress test the peg mechanism of [Stablecoin/Asset]. Analyze collateral ratios, liquidation cascades, and historical de-peg events.')">📉
+                        Stress Test Peg</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('council', 'Verify the reserve claims of [Project]. Cross-reference on-chain data with stated reserves, audit custodian arrangements, and flag discrepancies.')">🔍
+                        Verify Reserves</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="flex-direction: column; align-items: flex-start; gap: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <label class="card-label">Council Members</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="card-hint">Select 2+ models</span>
+                            <span id="toyow-mode-badge" class="quick-chip"
+                                style="display: none; background: rgba(139, 92, 246, 0.3); border-color: var(--purple-light); color: var(--purple-light); font-size: 11px; cursor: default;">🔒
+                                Institutional Governance Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="model-filter-bar" style="width: 100%;">
+                        <div class="search-wrapper">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="M21 21l-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" id="council-model-search" class="model-search"
+                                placeholder="Search models..." oninput="filterCouncilModels()">
+                        </div>
+                        <div class="filter-chips">
+                            <button class="filter-chip toyow-filter" data-filter="Toyow" onclick="toggleToyowMode(this)"
+                                style="background: rgba(139, 92, 246, 0.15); border-color: var(--purple-light); color: var(--purple-light);">🏛️
+                                Toyow</button>
+                            <button class="filter-chip" data-filter="Reasoning"
+                                onclick="toggleFilter('council', 'Reasoning', this)">🧠 Reasoning</button>
+                            <button class="filter-chip" data-filter="Coding"
+                                onclick="toggleFilter('council', 'Coding', this)">💻 Coding</button>
+                            <button class="filter-chip" data-filter="Fast"
+                                onclick="toggleFilter('council', 'Fast', this)">⚡ Fast</button>
+                            <button class="filter-chip" data-filter="Multimodal"
+                                onclick="toggleFilter('council', 'Multimodal', this)">🖼️ Multimodal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selection Counter -->
+                <div class="selection-counter" id="council-selection-counter">
+                    <span class="counter-text"><strong id="council-selected-count">3</strong> models selected</span>
+                    <div class="counter-badges">
+                        <span class="speed-badge" id="council-speed-badge">⚡ Fast</span>
+                        <span class="cost-badge" id="council-cost-badge">💰 Free</span>
+                    </div>
+                </div>
+
+                <div class="model-grid" id="council-models">
+                    <!-- Models will be rendered here -->
+                </div>
+
+                <!-- Preset Controls -->
+                <div class="preset-controls">
+                    <button class="preset-btn save-preset" onclick="savePreset('council')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        Save Setup
+                    </button>
+                    <div class="preset-dropdown-wrapper">
+                        <select id="council-preset-select" class="preset-dropdown"
+                            onchange="loadPreset('council', this.value)">
+                            <option value="">Load Preset...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chairman Settings Card -->
+            <div class="card prompt-card">
+                <label class="card-label">Chairman Settings</label>
+                <p class="card-hint" style="margin-bottom: 12px;">The Chairman synthesizes all council responses
+                    into a
+                    unified recommendation.</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <label class="card-label" style="font-size: 12px;">Chairman Model</label>
+                        </div>
+                        <select id="chairman-select" class="model-select" style="width: 100%;"></select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <label class="card-label" style="font-size: 12px;">Deliberation Rounds</label>
+                            <span class="card-hint-inline" id="council-rounds-label">1 Round</span>
+                        </div>
+                        <input type="range" id="council-rounds" min="1" max="5" value="1" class="mode-slider"
+                            oninput="document.getElementById('council-rounds-label').textContent = this.value + (this.value == 1 ? ' Round' : ' Rounds')">
+                    </div>
+                </div>
+
+                <label class="card-label" style="margin-top: 8px;">Chairman Persona (Optional)</label>
+                <div class="input-wrapper" style="margin-top: 8px;">
+                    <textarea id="chairman-persona" class="prompt-input" style="min-height: 80px;"
+                        placeholder="Define the Chairman's synthesis style... e.g., 'Analytical and data-driven, focuses on consensus and actionable insights'"></textarea>
+                </div>
+                <div class="quick-prompts" style="margin-top: 12px;">
+                    <span class="quick-label">Try these personas:</span>
+                    <button class="quick-btn"
+                        onclick="setChairmanPersona('Analytical synthesizer who prioritizes data, facts, and measurable outcomes. Drives toward actionable consensus.')">📊
+                        Analyst</button>
+                    <button class="quick-btn"
+                        onclick="setChairmanPersona('Devil\\'s advocate who challenges assumptions, highlights risks, and ensures robust conclusions.')">😈
+                        Critic</button>
+                    <button class="quick-btn"
+                        onclick="setChairmanPersona('Academic professor who values rigorous methodology, citations, and theoretical frameworks.')">🎓
+                        Academic</button>
+                    <button class="quick-btn"
+                        onclick="setChairmanPersona('Pragmatic business leader focused on ROI, feasibility, and real-world implementation.')">💼
+                        Executive</button>
+                    <button class="quick-btn"
+                        onclick="setChairmanPersona('Creative innovator who synthesizes unconventional ideas and explores edge cases.')">🚀
+                        Visionary</button>
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; gap: 16px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                    <div class="setting-header">
+                        <label class="card-label" style="font-size: 12px;">Peer Ranking</label>
+                        <button class="toggle-switch active" id="council-peer-ranking-toggle"
+                            onclick="this.classList.toggle('active')">
+                            <div class="toggle-dot"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-btn" onclick="startCouncil()" style="margin-top: 20px;">
+                Start Research <span class="btn-arrow">→</span>
+            </button>
+        </section>
+
+        <!-- DxO Mode -->
+        <section id="dxo-page" class="page">
+            <div class="page-badge cyan">
+                <span>⚡</span> Role-Based Orchestration
+            </div>
+            <h1 class="page-title dxo-title">DxO Decision Orchestrator</h1>
+            <p class="page-description">
+                Inspired by Microsoft's MAI-DxO research. Assign different AI models to specialized roles for
+                collaborative decision-making, research synthesis, and problem-solving.
+            </p>
+
+            <div class="card prompt-card">
+                <label class="card-label">Problem Statement or Research Question</label>
+                <div class="input-wrapper">
+                    <textarea id="dxo-prompt" class="prompt-input"
+                        placeholder="Describe your decision problem, research question, or topic that needs multi-perspective analysis..."></textarea>
+                    <div class="input-actions">
+                        <button class="upload-btn" onclick="triggerUpload('dxo')" title="Upload Image/Document">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="dxo-attachments" class="attachments-preview"></div>
+                <div class="quick-prompts">
+                    <span class="quick-label">Try these:</span>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('dxo', 'DEXs are projected to capture 25% of spot trading volume by end of 2026. Analyze the competitive dynamics between Uniswap V4, Jupiter, and emerging DEX aggregators for institutional flow.')">📊
+                        DEX Market Share</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('dxo', 'With US CLARITY Act and SEC guidance enabling institutional crypto, evaluate the regulatory framework comparison: US vs EU MiCA vs UK crypto rules. Which jurisdiction offers the best institutional setup?')">⚖️
+                        Regulatory Compare</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('dxo', 'Design an AI-governed DeFi protocol where autonomous agents manage treasury, risk parameters, and governance votes. What safeguards prevent AI failure modes?')">🤖
+                        AI Governance</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('dxo', 'JPMorgan and major banks are exploring regulated stablecoin issuance. Compare institutional stablecoin adoption: USDC vs USDT vs bank-issued stablecoins for cross-border settlements.')">💵
+                        Stablecoin Wars</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <label class="card-label">Role Assignments</label>
+                    <button class="add-role-btn" onclick="addRole()">+ Add Role</button>
+                </div>
+                <p class="card-subtitle">Assign AI models to specialized roles. Each role brings a unique perspective.
+                </p>
+                <div id="role-assignments">
+                    <!-- Roles will be rendered here -->
+                </div>
+            </div>
+
+            <div class="quick-templates">
+                <span class="quick-label">Quick Templates</span>
+                <button class="template-chip"
+                    style="background: rgba(139, 92, 246, 0.2); border-color: var(--purple-light); color: var(--purple-light);"
+                    onclick="loadTemplate('toyow_rwa')">
+                    <span>🏛️</span> Toyow RWA
+                </button>
+                <button class="template-chip" onclick="loadTemplate('crypto_analysis')">
+                    <span>₿</span> Crypto Research
+                </button>
+                <button class="template-chip" onclick="loadTemplate('defi_audit')">
+                    <span>️</span> DeFi Audit
+                </button>
+                <button class="template-chip" onclick="loadTemplate('technical')">
+                    <span>💻</span> Tech Review
+                </button>
+                <button class="template-chip" onclick="loadTemplate('strategic')">
+                    <span>🎯</span> Strategic
+                </button>
+                <button class="template-chip" onclick="loadTemplate('creative')">
+                    <span>💎</span> Creative
+                </button>
+            </div>
+
+            <div class="card settings-card">
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <label class="card-label">Rounds</label>
+                            <span class="card-hint-inline" id="dxo-rounds-label">1 Round</span>
+                        </div>
+                        <input type="range" id="dxo-rounds" min="1" max="5" value="1" class="mode-slider"
+                            oninput="document.getElementById('dxo-rounds-label').textContent = this.value + (this.value == 1 ? ' Round' : ' Rounds')">
+                    </div>
+                </div>
+            </div>
+
+            <button class="primary-btn" onclick="startDxO()">
+                Start Analysis <span class="btn-arrow">→</span>
+            </button>
+        </section>
+
+        <!-- Ensemble Mode -->
+        <section id="ensemble-page" class="page">
+            <div class="page-badge green">
+                <span>🔮</span> Anonymous Collective Intelligence
+            </div>
+            <h1 class="page-title ensemble-title">Ensemble</h1>
+            <p class="page-description">
+                Inspired by AI Council MCP. Query multiple AI models simultaneously, anonymize their responses with code
+                names, then synthesize the best answer without brand bias.
+            </p>
+
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3>Parallel Query</h3>
+                    <p>All models receive your question simultaneously</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3>Anonymize</h3>
+                    <p>Responses get code names (Alpha, Beta, etc.)</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3>Synthesize</h3>
+                    <p>Unbiased synthesis of best insights</p>
+                </div>
+            </div>
+
+            <div class="card prompt-card">
+                <label class="card-label">Your Question or Topic</label>
+                <div class="input-wrapper">
+                    <textarea id="ensemble-prompt" class="prompt-input"
+                        placeholder="Ask anything - the ensemble will provide multiple perspectives and synthesize the best answer..."></textarea>
+                    <div class="input-actions">
+                        <button class="upload-btn" onclick="triggerUpload('ensemble')" title="Upload Image/Document">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="ensemble-attachments" class="attachments-preview"></div>
+                <div class="quick-prompts">
+                    <span class="quick-label">Try these:</span>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('ensemble', '74% of US family offices are now exploring digital assets. What allocation strategies are institutions using for Bitcoin and Ethereum ETFs vs direct custody?')">🏦
+                        Family Office Crypto</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('ensemble', 'With 30% of ETH supply now staked (36M ETH), analyze the security and centralization implications. Is liquid staking becoming systemically important?')">🔐
+                        ETH Staking Risk</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('ensemble', 'Morgan Stanley filed for Bitcoin and Solana ETFs in January 2026. Synthesize the competitive landscape among asset managers racing for crypto ETF market share.')">📈
+                        ETF Race</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('ensemble', 'Privacy protocols are becoming prerequisites for institutional DeFi adoption. Compare Tornado Cash alternatives, zk-based privacy solutions, and compliant privacy approaches.')">🔒
+                        Privacy DeFi</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <label class="card-label">Ensemble Members</label>
+                    <span class="card-hint" id="ensemble-count">3 selected</span>
+                </div>
+
+                <!-- Search & Filter Bar -->
+                <div class="model-filter-bar">
+                    <div class="search-wrapper">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" id="ensemble-model-search" class="model-search"
+                            placeholder="Search models..." oninput="filterEnsembleModels()">
+                    </div>
+                    <div class="filter-chips">
+                        <button class="filter-chip" data-filter="Reasoning"
+                            onclick="toggleFilter('ensemble', 'Reasoning', this)">🧠 Reasoning</button>
+                        <button class="filter-chip" data-filter="Coding"
+                            onclick="toggleFilter('ensemble', 'Coding', this)">💻 Coding</button>
+                        <button class="filter-chip" data-filter="Fast"
+                            onclick="toggleFilter('ensemble', 'Fast', this)">⚡ Fast</button>
+                        <button class="filter-chip" data-filter="Multimodal"
+                            onclick="toggleFilter('ensemble', 'Multimodal', this)">🖼️ Multimodal</button>
+                    </div>
+                </div>
+
+                <!-- Selection Counter -->
+                <div class="selection-counter" id="ensemble-selection-counter">
+                    <span class="counter-text"><strong id="ensemble-selected-count">3</strong> models selected</span>
+                    <div class="counter-badges">
+                        <span class="speed-badge" id="ensemble-speed-badge">⚡ Fast</span>
+                        <span class="cost-badge" id="ensemble-cost-badge">💰 Free</span>
+                    </div>
+                </div>
+
+                <div class="model-grid" id="ensemble-models">
+                    <!-- Models will be rendered here -->
+                </div>
+
+                <!-- Preset Controls -->
+                <div class="preset-controls">
+                    <button class="preset-btn save-preset" onclick="savePreset('ensemble')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        Save Setup
+                    </button>
+                    <div class="preset-dropdown-wrapper">
+                        <select id="ensemble-preset-select" class="preset-dropdown"
+                            onchange="loadPreset('ensemble', this.value)">
+                            <option value="">Load Preset...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card settings-card">
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <div class="setting-header">
+                                <label class="card-label">Rounds</label>
+                                <span class="card-hint-inline" id="ensemble-rounds-label">1 Round</span>
+                            </div>
+                            <input type="range" id="ensemble-rounds" min="1" max="5" value="1" class="mode-slider"
+                                oninput="document.getElementById('ensemble-rounds-label').textContent = this.value + (this.value == 1 ? ' Round' : ' Rounds')">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="primary-btn ensemble-btn" onclick="startEnsemble()">
+                    Start Ensemble <span class="btn-arrow">→</span>
+                </button>
+        </section>
+
+        <!-- Super Chat Mode -->
+        <section id="superchat-page" class="page">
+            <div class="page-badge blue">
+                <span>💬</span> Direct Model Chat
+            </div>
+            <h1 class="page-title">Super Chat</h1>
+            <p class="page-description">
+                Chat directly with a single AI model of your choice. Simple, fast, and focused conversations.
+            </p>
+
+            <div class="card">
+                <label class="card-label">Select Model</label>
+                <select id="superchat-model" class="model-select">
+                    <!-- Options will be hydrated by JS based on Free Mode -->
+                </select>
+            </div>
+
+            <div class="card prompt-card">
+                <label class="card-label">Your Message</label>
+                <div class="input-wrapper">
+                    <textarea id="superchat-prompt" class="prompt-input" placeholder="Type your message..."></textarea>
+                    <div class="input-actions">
+                        <button class="upload-btn" onclick="triggerUpload('superchat')" title="Upload Image/Document">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="superchat-attachments" class="attachments-preview"></div>
+                <div class="quick-prompts">
+                    <span class="quick-label">Try these:</span>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('superchat', 'Explain how Bitcoin spot ETFs work and why they attracted $1.7B in the first week of January 2026.')">📈
+                        BTC ETF Basics</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('superchat', 'What is the Ethereum Glamsterdam upgrade and when is it coming?')">⚡
+                        Glamsterdam</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('superchat', 'Compare the top 5 AI crypto projects by market cap and utility in 2026.')">🤖
+                        AI Crypto</button>
+                    <button class="quick-chip example-prompt"
+                        onclick="setPrompt('superchat', 'What are tokenized real-world assets (RWAs) and why are institutions investing in them?')">🏦
+                        RWA Explained</button>
+                </div>
+            </div>
+
+            <button class="primary-btn" onclick="startSuperChat()">
+                Send Message <span class="btn-arrow">→</span>
+            </button>
+        </section>
+
+        <!-- Benchmarks Mode -->
+        <section id="benchmarks-page" class="page">
+            <div class="page-badge orange">
+                <span>🏆</span> AI Model Benchmarking
+            </div>
+            <h1 class="page-title benchmarks-title">Benchmarks</h1>
+            <p class="page-description">
+                Test your council or ensemble setup against predefined challenging problems.
+                Automatic scoring for coherence, accuracy, and collaboration quality.
+            </p>
+
+            <div class="card">
+                <div class="card-header">
+                    <label class="card-label">Select Benchmark Test</label>
+                    <span class="card-hint">Choose a challenge to evaluate AI performance</span>
+                </div>
+                <div class="benchmark-grid">
+                    <div class="benchmark-card" onclick="selectBenchmark('blue-eyed')" data-benchmark="blue-eyed">
+                        <div class="benchmark-icon">🧩</div>
+                        <div class="benchmark-info">
+                            <h4>Blue-Eyed Islanders</h4>
+                            <p>Classic logic puzzle testing step-by-step reasoning</p>
+                            <span class="difficulty hard">Hard</span>
+                        </div>
+                    </div>
+                    <div class="benchmark-card" onclick="selectBenchmark('three-gods')" data-benchmark="three-gods">
+                        <div class="benchmark-icon">🔮</div>
+                        <div class="benchmark-info">
+                            <h4>Three Gods Puzzle</h4>
+                            <p>Determine which god is which with 3 questions</p>
+                            <span class="difficulty hard">Hard</span>
+                        </div>
+                    </div>
+                    <div class="benchmark-card" onclick="selectBenchmark('coding')" data-benchmark="coding">
+                        <div class="benchmark-icon">💻</div>
+                        <div class="benchmark-info">
+                            <h4>Coding Challenge</h4>
+                            <p>Implement Manacher's algorithm for palindromes</p>
+                            <span class="difficulty medium">Medium</span>
+                        </div>
+                    </div>
+                    <div class="benchmark-card" onclick="selectBenchmark('debate')" data-benchmark="debate">
+                        <div class="benchmark-icon">⚖️</div>
+                        <div class="benchmark-info">
+                            <h4>AI Ethics Debate</h4>
+                            <p>Nuanced discussion of AI in critical decisions</p>
+                            <span class="difficulty medium">Medium</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="card-label">Setup Configuration</label>
+                <div class="benchmark-config">
+                    <div class="config-option">
+                        <label>Mode</label>
+                        <select id="benchmark-mode" class="model-select">
+                            <option value="council">Council (with Chairman)</option>
+                            <option value="ensemble">Ensemble (Anonymous)</option>
+                        </select>
+                    </div>
+                    <div class="config-option">
+                        <label>Use Current Selection</label>
+                        <button class="toggle-switch active" id="use-current-selection"
+                            onclick="toggleBenchmarkSelection()">
+                            <div class="toggle-dot"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="benchmark-selected" class="benchmark-selected hidden">
+                <div class="selected-test-badge">
+                    <span id="selected-benchmark-icon">🧩</span>
+                    <span id="selected-benchmark-name">Blue-Eyed Islanders</span>
+                </div>
+            </div>
+
+            <button class="primary-btn benchmark-btn" onclick="startBenchmark()">
+                Run Benchmark <span class="btn-arrow">→</span>
+            </button>
+        </section>
+
+        <!-- History Page (New) -->
+        <section id="history-page" class="page">
+            <div class="page-badge purple">
+                <span>🕰️</span> Research Archives
+            </div>
+            <h1 class="page-title">Research History</h1>
+            <p class="page-description">
+                Access and manage your past research sessions. Export data or review previous synthesis.
+            </p>
+
+            <!-- History Filter Buttons -->
+            <div class="history-filter-bar" style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+                <button class="filter-chip active" onclick="filterHistoryByMode('all')" data-mode="all">All</button>
+                <button class="filter-chip council" onclick="filterHistoryByMode('council')"
+                    data-mode="council">Council</button>
+                <button class="filter-chip dxo" onclick="filterHistoryByMode('dxo')" data-mode="dxo">DxO</button>
+                <button class="filter-chip ensemble" onclick="filterHistoryByMode('ensemble')"
+                    data-mode="ensemble">Ensemble</button>
+                <button class="filter-chip superchat" onclick="filterHistoryByMode('superchat')"
+                    data-mode="superchat">Super Chat</button>
+            </div>
+
+            <!-- History Stats Row -->
+            <div class="history-stats"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                <div class="stat-box"
+                    style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 700; color: var(--teal-accent);" id="stat-total">0</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Total</div>
+                </div>
+                <div class="stat-box"
+                    style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 700; color: var(--purple-light);" id="stat-council">0
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Council</div>
+                </div>
+                <div class="stat-box"
+                    style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 700; color: var(--cyan);" id="stat-dxo">0</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">DxO</div>
+                </div>
+                <div class="stat-box"
+                    style="background: var(--bg-tertiary); padding: 12px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 700; color: var(--green-light);" id="stat-ensemble">0
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Ensemble</div>
+                </div>
+            </div>
+
+            <div class="card history-card" style="min-height: 400px;">
+                <div class="card-header">
+                    <label class="card-label">Past Sessions</label>
+                    <button class="header-btn" onclick="exportAllHistory()" style="font-size: 13px; padding: 6px 12px;">
+                        ⬇ Export All
+                    </button>
+                </div>
+                <!-- Search History -->
+                <div class="input-wrapper" style="margin-bottom: 16px;">
+                    <input type="text" id="history-search" class="model-search" placeholder="Search history..."
+                        oninput="filterHistory()"
+                        style="width: 100%; padding: 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);">
+                </div>
+
+                <div id="history-list" class="history-list">
+                    <!-- History items rendered here -->
+                    <div class="empty-state">No history found. Start a research session!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Panel (Hidden by default) -->
+        <section id="results-panel" class="results-panel hidden">
+            <div class="results-header">
+                <h2 id="results-title">Council Deliberation</h2>
+                <div class="results-actions">
+                    <button class="results-action-btn continue-btn" id="continue-session-btn"
+                        onclick="continueSession()" title="Continue with context">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Continue
+                    </button>
+                    <button class="results-action-btn" onclick="copyAllResults()" title="Copy All">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy
+                    </button>
+                    <div class="export-dropdown-wrapper">
+                        <button class="results-action-btn export-dropdown-btn" onclick="toggleExportMenu()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Export
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 9l6 6 6-6"></path>
+                            </svg>
+                        </button>
+                        <div class="export-menu hidden" id="export-menu">
+                            <button onclick="exportCurrentResults()">📄 Markdown</button>
+                            <button onclick="exportAsPDF()">📑 PDF</button>
+                            <button onclick="sendToNotion()">🚀 Send to Notion</button>
+                            <button onclick="generateShareableLink()">🔗 Share Link</button>
+                        </div>
+                    </div>
+                    <button class="close-btn" onclick="closeResults()">×</button>
+                </div>
+            </div>
+            <div class="results-content">
+                <div id="model-responses" class="model-responses">
+                    <!-- Individual model responses -->
+                </div>
+                <div id="peer-rankings-container" class="peer-rankings hidden">
+                    <div class="card-header">
+                        <label class="card-label">Peer Rankings & Critique</label>
+                        <span class="card-hint">Models ranking each other</span>
+                    </div>
+                    <div id="peer-rankings-content"></div>
+                </div>
+
+                <div id="synthesis-panel" class="synthesis-panel hidden">
+                    <h3>
+                        <span class="synthesis-icon">✨</span>
+                        Final Synthesis
+                    </h3>
+                    <div id="synthesis-content" class="synthesis-content"></div>
+                </div>
+
+                <div class="session-meta-card">
+                    <div class="card-header">
+                        <label class="card-label">Session Metadata</label>
+                        <span class="card-hint">Tag this research for later filtering</span>
+                    </div>
+                    <div class="meta-inputs">
+                        <div class="meta-field">
+                            <label>Research Tags (comma separated)</label>
+                            <input type="text" id="session-tags" placeholder="e.g. eth, de-fi, scaling, risk-analysis">
+                        </div>
+                        <div class="meta-field">
+                            <label>Researcher Notes</label>
+                            <textarea id="session-notes" placeholder="Key takeaways or follow-up items..."></textarea>
+                        </div>
+                        <button class="primary-btn save-meta-btn" onclick="saveSessionMeta()">
+                            💾 Save Research Notes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Page -->
+        <section id="leaderboard-page" class="page hidden">
+            <div class="page-badge orange">
+                <span>🏆</span> Model Performance Leaderboard
+            </div>
+            <h1 class="page-title">Personal Leaderboard</h1>
+            <p class="page-description">
+                Tracking win rates, rankings, and performance of all council members over time based on your research
+                sessions.
+            </p>
+
+            <div class="leaderboard-filters">
+                <div class="filter-group">
+                    <label>Filter by Research Tag</label>
+                    <div class="tag-filter-wrapper">
+                        <input type="text" id="leaderboard-tag-filter" placeholder="e.g. eth, security"
+                            oninput="renderLeaderboard()">
+                    </div>
+                </div>
+                <div class="leaderboard-stats-summary">
+                    <div class="summary-box">
+                        <span class="label">Total Sessions</span>
+                        <span class="value" id="lb-total-sessions">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <label class="card-label">Top Performers</label>
+                </div>
+                <div id="leaderboard-content">
+                    <table class="leaderboard-table" id="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Model</th>
+                                <th>Win Rate</th>
+                                <th>Top Pick %</th>
+                                <th>Sessions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <!-- Data rows will be injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- History Modal -->
+        <div id="history-modal" class="modal hidden">
+            <div class="modal-content history-modal">
+                <div class="modal-header">
+                    <h2>Research History</h2>
+                    <button class="close-btn" onclick="closeHistory()">×</button>
+                </div>
+                <div class="history-actions">
+                    <button class="action-chip purple" onclick="filterHistory('superchat')" data-mode="superchat">+
+                        Super Chat</button>
+                    <button class="action-chip purple" onclick="filterHistory('council')" data-mode="council">+
+                        Council</button>
+                    <button class="action-chip pink" onclick="filterHistory('dxo')" data-mode="dxo">+ DxO</button>
+                    <button class="action-chip green" onclick="filterHistory('ensemble')" data-mode="ensemble">+
+                        Ensemble</button>
+                    <button class="filter-btn" onclick="filterHistory('all')">Show All</button>
+                    <button class="filter-btn export-all-btn" onclick="exportAllHistory()"
+                        style="margin-left: auto; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4);">
+                        ⬇ Export All
+                    </button>
+                </div>
+                <div class="history-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">Total</span>
+                        <span class="stat-value" id="stat-total">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Super Chat</span>
+                        <span class="stat-value blue" id="stat-superchat">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Council</span>
+                        <span class="stat-value purple" id="stat-council">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">DxO</span>
+                        <span class="stat-value pink" id="stat-dxo">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Ensemble</span>
+                        <span class="stat-value green" id="stat-ensemble">0</span>
+                    </div>
+                </div>
+                <div id="history-list" class="history-list">
+                    <!-- History items will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content settings-modal">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button class="close-btn" onclick="closeSettings()">×</button>
+                </div>
+                <div class="settings-content">
+                    <!-- Profile Section -->
+                    <div class="setting-group profile-section" id="settings-profile-section" style="display: none;">
+                        <div class="profile-header"
+                            style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div class="profile-avatar-large"
+                                style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 20px;">
+                                <span id="settings-profile-initial">?</span>
+                            </div>
+                            <div class="profile-info" style="flex: 1;">
+                                <div id="settings-profile-email"
+                                    style="font-size: 14px; color: #fff; font-weight: 500;">Not logged in</div>
+                                <div style="font-size: 12px; color: rgba(255,255,255,0.5);">Synced with Firebase</div>
+                            </div>
+                            <button class="logout-btn" onclick="firebaseLogout()"
+                                style="padding: 8px 16px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s;">
+                                🚪 Logout
+                            </button>
+                        </div>
+                        <div style="border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;"></div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="setting-label">OpenRouter API Key</label>
+                        <input type="password" id="api-key-input" class="setting-input" placeholder="sk-or-v1-..."
+                            value="">
+                        <p class="setting-hint">Your API key is stored locally in your browser.</p>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-header">
+                            <label class="setting-label">Local LLM Support</label>
+                            <button class="toggle-switch" id="local-llm-toggle"
+                                onclick="this.classList.toggle('active')">
+                                <div class="toggle-dot"></div>
+                            </button>
+                        </div>
+                        <div class="local-endpoint-group">
+                            <label class="card-label">Endpoint URL</label>
+                            <input type="text" id="local-endpoint-input" class="setting-input"
+                                placeholder="http://localhost:11434/v1" value="http://localhost:11434/v1">
+                            <p class="setting-hint">Supports Ollama (port 11434) or LM Studio (port 1234).</p>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label class="setting-label">Notion Integration (Export)</label>
+                        <div class="notion-settings-grid" style="display: grid; gap: 10px; margin-top: 10px;">
+                            <div>
+                                <label class="card-label">Notion API Key</label>
+                                <input type="password" id="notion-api-key" class="setting-input"
+                                    placeholder="secret_...">
+                            </div>
+                            <div>
+                                <label class="card-label">Notion Database ID</label>
+                                <input type="text" id="notion-db-id" class="setting-input" placeholder="32-char ID">
+                            </div>
+                        </div>
+                        <p class="setting-hint">Create an integration at developers.notion.com and share your database
+                            with it.</p>
+                    </div>
+                    <button class="primary-btn" onclick="saveSettings()">Save Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Panel (Slide-out from right) -->
+        <!-- Profile Modal (Centered) -->
+        <div id="profile-modal" class="modal hidden">
+            <div class="modal-content profile-modal">
+                <div class="modal-header">
+                    <h2>Profile & Settings</h2>
+                    <button class="close-btn" onclick="toggleProfilePanel()">×</button>
+                </div>
+
+                <div class="profile-content-scroll">
+                    <!-- User Profile Section -->
+                    <div class="profile-section centered">
+                        <div class="profile-photo-wrapper" onclick="triggerPhotoUpload()">
+                            <div class="profile-photo" id="profile-photo">
+                                <span id="profile-photo-initial">?</span>
+                            </div>
+                            <div class="photo-overlay">📷</div>
+                            <input type="file" id="photo-upload" accept="image/*" onchange="handlePhotoUpload(event)"
+                                style="display:none;">
+                        </div>
+                        <div class="profile-name-section">
+                            <input type="text" id="profile-display-name" class="profile-name-input"
+                                placeholder="Your Name">
+                            <div class="profile-email" id="profile-email-display">Not signed in</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-divider"></div>
+
+                    <!-- Quick Actions -->
+                    <div class="profile-actions-grid">
+                        <button class="profile-action-card" onclick="showHistory(); toggleProfilePanel();">
+                            <div class="action-icon">📜</div>
+                            <div class="action-text">Research History</div>
+                        </button>
+                        <button class="profile-action-card"
+                            onclick="window.open('https://openrouter.ai/keys', '_blank')">
+                            <div class="action-icon">🔑</div>
+                            <div class="action-text">Get API Key</div>
+                        </button>
+                    </div>
+
+                    <div class="profile-divider"></div>
+
+                    <!-- API Keys Section -->
+                    <div class="profile-settings-section">
+                        <h3 class="profile-section-title">API Configuration</h3>
+                        <div class="profile-setting-group">
+                            <label>OpenRouter API Key</label>
+                            <input type="password" id="profile-api-key" class="profile-input"
+                                placeholder="sk-or-v1-...">
+                        </div>
+                        <div class="profile-setting-group">
+                            <label>Notion API Key</label>
+                            <input type="password" id="profile-notion-key" class="profile-input"
+                                placeholder="secret_...">
+                        </div>
+                        <div class="profile-setting-group">
+                            <label>Notion Database ID</label>
+                            <input type="text" id="profile-notion-db" class="profile-input" placeholder="32-char ID">
+                        </div>
+                        <button class="profile-save-btn" onclick="saveProfileSettings()">💾 Save Configuration</button>
+                    </div>
+
+                    <div class="profile-divider"></div>
+
+                    <!-- Logout Section -->
+                    <div class="profile-logout-section">
+                        <button class="profile-logout-btn" onclick="firebaseLogout()">
+                            Sign Out
+                        </button>
+                        <div class="profile-version">Satya v3.1 • Standard</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.onerror = function (msg, url, line) {
+            console.error('Global Error:', msg, url, line);
+            if (String(msg).includes('import') || String(msg).includes('firebase') || String(msg).includes('module')) {
+                alert('⚠️ System Error: Failed to load application modules.\n\nPossible causes:\n1. Ad-blocker blocking Google/Firebase\n2. Network firewall\n3. Weak internet connection\n\nPlease check console for details.');
+            }
+        };
+    </script>
+    <script type="module" src="main.js?v=6.2.0"></script>
+</body>
+
+</html>
