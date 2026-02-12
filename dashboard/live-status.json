@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T08:41:50.365343Z",
+  "generatedAt": "2026-02-12T08:47:20.362885Z",
   "health": "ok",
   "system": {
     "health": "ok",
@@ -16,7 +16,7 @@
     "sessions": {
       "main": {
         "totalTokens": null,
-        "contextTokens": null
+        "contextTokens": 24000
       }
     },
     "timers": [
@@ -60,7 +60,7 @@
         "unit": "nexus-pages-status.timer",
         "activates": "nexus-pages-status.service",
         "next": null,
-        "last": "2026-02-12T08:41:50.309054Z"
+        "last": "2026-02-12T08:47:20.309045Z"
       }
     ]
   },
