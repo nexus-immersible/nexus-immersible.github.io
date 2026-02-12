@@ -1,16 +1,38 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T07:49:47.320Z",
+  "generatedAt": "2026-02-12T08:17:15.817Z",
   "repo": {
     "owner": "nexus-immersible",
     "name": "nexus-immersible.github.io"
   },
   "counts": {
-    "backlog": 0,
+    "backlog": 1,
     "next": 0,
     "in_progress": 0,
     "blocked": 0,
     "done": 0
   },
-  "tasks": []
+  "tasks": [
+    {
+      "number": 1,
+      "title": "Command Center: Kanban smoke test (safe to close)",
+      "state": "open",
+      "column": "backlog",
+      "dept": "ops",
+      "prio": "low",
+      "labels": [
+        "kanban",
+        "status:done",
+        "dept:ops",
+        "priority:low"
+      ],
+      "assignee": null,
+      "htmlUrl": "https://github.com/nexus-immersible/nexus-immersible.github.io/issues/1",
+      "url": "https://api.github.com/repos/nexus-immersible/nexus-immersible.github.io/issues/1",
+      "createdAt": "2026-02-12T08:17:06Z",
+      "updatedAt": "2026-02-12T08:17:06Z",
+      "closedAt": null,
+      "bodyExcerpt": "This is a smoke test issue created by the VPS to validate labels + kanban indexing.\n\n- Expected: appears on /kanban.html within ~1-2 minutes\n- Safe: contains no secrets"
+    }
+  ]
 }
