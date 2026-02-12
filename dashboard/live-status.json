@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T08:05:49.358720Z",
+  "generatedAt": "2026-02-12T08:10:51.907790Z",
   "health": "ok",
   "system": {
     "health": "ok",
@@ -55,6 +55,12 @@
         "activates": "nexus-morning-brief.service",
         "next": "2026-02-13T01:30:00Z",
         "last": "2026-02-12T01:30:51.844862Z"
+      },
+      {
+        "unit": "nexus-pages-status.timer",
+        "activates": "nexus-pages-status.service",
+        "next": null,
+        "last": "2026-02-12T08:10:51.845022Z"
       }
     ]
   },
