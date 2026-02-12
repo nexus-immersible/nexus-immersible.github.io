@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T08:47:20.362885Z",
+  "generatedAt": "2026-02-12T08:52:20.380688Z",
   "health": "ok",
   "system": {
     "health": "ok",
@@ -15,7 +15,7 @@
     },
     "sessions": {
       "main": {
-        "totalTokens": null,
+        "totalTokens": 20789,
         "contextTokens": 24000
       }
     },
@@ -23,8 +23,8 @@
       {
         "unit": "nexus-ops-sync.timer",
         "activates": "nexus-ops-sync.service",
-        "next": "2026-02-12T08:51:20.318118Z",
-        "last": "2026-02-12T08:36:20.309081Z"
+        "next": "2026-02-12T09:07:20.327128Z",
+        "last": "2026-02-12T08:52:20.309039Z"
       },
       {
         "unit": "nexus-git-sync.timer",
@@ -60,7 +60,7 @@
         "unit": "nexus-pages-status.timer",
         "activates": "nexus-pages-status.service",
         "next": null,
-        "last": "2026-02-12T08:47:20.309045Z"
+        "last": "2026-02-12T08:52:20.327407Z"
       }
     ]
   },
