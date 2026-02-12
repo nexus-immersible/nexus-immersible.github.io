@@ -1,23 +1,23 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T08:17:15.817Z",
+  "generatedAt": "2026-02-12T08:55:32.583Z",
   "repo": {
     "owner": "nexus-immersible",
     "name": "nexus-immersible.github.io"
   },
   "counts": {
-    "backlog": 1,
+    "backlog": 0,
     "next": 0,
     "in_progress": 0,
     "blocked": 0,
-    "done": 0
+    "done": 1
   },
   "tasks": [
     {
       "number": 1,
       "title": "Command Center: Kanban smoke test (safe to close)",
       "state": "open",
-      "column": "backlog",
+      "column": "done",
       "dept": "ops",
       "prio": "low",
       "labels": [
