@@ -27,8 +27,10 @@ function labelNames(issue) {
 }
 
 function pickColumn(issue) {
-  if (issue.state === "closed") return "done";
   const labels = new Set(labelNames(issue));
+  // Prefer explicit status labels; fall back to closed -> done.
+  if (labels.has("status:done")) return "done";
+  if (issue.state === "closed") return "done";
   if (labels.has("status:blocked")) return "blocked";
   if (labels.has("status:in-progress")) return "in_progress";
   if (labels.has("status:next")) return "next";
