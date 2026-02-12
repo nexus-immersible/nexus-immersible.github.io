@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": null,
+  "health": "warn",
+  "system": {
+    "health": "warn",
+    "telegram": { "ok": false },
+    "services": { "gateway_active": false },
+    "sessions": { "main": { "totalTokens": null, "contextTokens": null } },
+    "timers": []
+  },
+  "nightShift": { "latestArtifact": null }
+}
+

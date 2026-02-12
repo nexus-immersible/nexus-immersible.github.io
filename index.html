@@ -1,395 +1,169 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS Visual Command Center</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --neon-green: #00ff41;
-            --neon-blue: #00d4ff;
-            --neon-red: #ff3860;
-            --neon-orange: #ff9500;
-            --dark-bg: #0a0a0f;
-            --card-bg: #151520;
-            --text-primary: #ffffff;
-            --text-secondary: #8b8b9e;
-        }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--dark-bg);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 20px;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(0,255,65,0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0,212,255,0.03) 0%, transparent 50%);
-        }
-        .header {
-            text-align: center;
-            padding: 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 3em;
-            font-weight: 300;
-            letter-spacing: 0.2em;
-            background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-        }
-        .status-bar {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        .status-pill {
-            background: rgba(0,255,65,0.1);
-            border: 1px solid var(--neon-green);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--neon-green);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .card-title {
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-        }
-        .card-icon {
-            font-size: 1.5em;
-        }
-        .metric-large {
-            font-size: 3.5em;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-        .metric-green { color: var(--neon-green); }
-        .metric-blue { color: var(--neon-blue); }
-        .metric-orange { color: var(--neon-orange); }
-        .metric-label {
-            color: var(--text-secondary);
-            font-size: 0.9em;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-        .task-list {
-            list-style: none;
-        }
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .task-item:last-child { border-bottom: none; }
-        .task-status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-        .status-done { background: var(--neon-green); }
-        .status-progress { background: var(--neon-orange); animation: pulse 2s infinite; }
-        .status-pending { background: var(--text-secondary); }
-        .task-text { flex: 1; }
-        .task-time {
-            color: var(--text-secondary);
-            font-size: 0.85em;
-        }
-        .chart-container {
-            position: relative;
-            height: 200px;
-            margin-top: 20px;
-        }
-        .footer {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-            font-size: 0.85em;
-            margin-top: 40px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        .links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .links a {
-            color: var(--neon-blue);
-            text-decoration: none;
-            padding: 10px 20px;
-            border: 1px solid var(--neon-blue);
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .links a:hover {
-            background: var(--neon-blue);
-            color: var(--dark-bg);
-        }
-        @media (max-width: 768px) {
-            .header h1 { font-size: 2em; }
-            .metric-large { font-size: 2.5em; }
-            .grid { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>NEXUS</h1>
-        <div class="status-bar">
-            <div class="status-pill">
-                <span class="pulse"></span>
-                SYSTEM ONLINE
-            </div>
-            <div class="status-pill">
-                🧠 AI ACTIVE
-            </div>
-            <div class="status-pill">
-                🛡️ SECURE
-            </div>
-            <div class="status-pill">
-                ⏰ NIGHT SHIFT
-            </div>
-        </div>
-    </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>NEXUS Command Center</title>
+    <meta name="description" content="NEXUS Command Center: realtime Kanban + system telemetry." />
 
-    <div class="grid">
-        <!-- Cost Card -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Budget Status</span>
-                <span class="card-icon">💰</span>
-            </div>
-            <div class="metric-large metric-green">$0.15</div>
-            <div class="metric-label">of $1.00 budget used (98% remaining)</div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 2%"></div>
-            </div>
+    <link rel="icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="assets/nexus-ui.css?v=1" />
+  </head>
+
+  <body data-page="index">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="word">NEXUS</div>
+          <div class="sub">command center</div>
         </div>
 
-        <!-- Tasks Card -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Task Progress</span>
-                <span class="card-icon">📊</span>
-            </div>
-            <div class="metric-large metric-blue">15<span style="font-size:0.4em; color:var(--text-secondary)">/22</span></div>
-            <div class="metric-label">tasks completed tonight</div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 68%"></div>
-            </div>
+        <nav class="nav" aria-label="Primary">
+          <a class="pill" href="/" aria-current="page">
+            <span class="dot ok"></span>
+            Home
+          </a>
+          <a class="pill" href="/kanban.html">
+            <span class="dot" data-live-dot></span>
+            Kanban
+          </a>
+          <a class="pill" href="/monitor.html">Monitor</a>
+          <a class="pill" href="/council/">Council</a>
+          <a class="pill" href="https://github.com/nexus-immersible/nexus-immersible.github.io">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-inner">
+          <h1 class="h-title">
+            Visual <span class="accent">Operations</span> Layer
+          </h1>
+          <p class="h-sub">
+            Public surface. No secrets. Tasks run only when labeled <code>run:queue</code>.
+          </p>
+          <div class="stack">
+            <span class="tag">Live updated: <span data-live-updated>—</span> IST</span>
+            <span class="tag">Kanban index: <span data-kanban-updated>—</span> IST</span>
+          </div>
         </div>
+      </section>
 
-        <!-- Skills Card -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Active Skills</span>
-                <span class="card-icon">🧩</span>
+      <section class="grid" aria-label="Overview">
+        <article class="card span-6">
+          <div class="kicker">System Snapshot</div>
+          <div class="metric">
+            <div class="value mono">
+              GW:<span data-metric-gateway>—</span> · TG:<span data-metric-telegram>—</span>
             </div>
-            <div class="metric-large metric-orange">5</div>
-            <div class="metric-label">skills installed & operational</div>
-            <ul class="task-list" style="margin-top:15px;">
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">prompt-guard v2.6.0</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">token-saver (42% savings)</span>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Recent Activity</span>
-                <span class="card-icon">⚡</span>
+            <div class="hint">
+              tokens=<span data-metric-tokens>—</span> · timers=<span data-metric-timers>—</span> · night=<span
+                data-metric-night
+                >—</span
+              >
             </div>
-            <ul class="task-list">
-                <!-- Activity Start -->
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Morning Brief</span>
-                    <span class="task-time">01:30</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Moltbook Night Shift</span>
-                    <span class="task-time">21:01</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Moltbook Night Shift</span>
-                    <span class="task-time">20:42</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Moltbook Night Shift</span>
-                    <span class="task-time">20:37</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Orchestrator Run</span>
-                    <span class="task-time">20:34</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Orchestrator Run</span>
-                    <span class="task-time">20:33</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Orchestrator Run</span>
-                    <span class="task-time">20:32</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Orchestrator Run</span>
-                    <span class="task-time">20:29</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-progress"></span>
-                    <span class="task-text">Orchestrator Run</span>
-                    <span class="task-time">20:25</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Orchestrator Run</span>
-                    <span class="task-time">20:25</span>
-                </li>
-                <!-- Activity End -->
-            </ul>
-        </div>
+          </div>
+          <ul class="list">
+            <li>
+              <span>Gateway (OpenClaw)</span>
+              <span data-metric-gateway>—</span>
+            </li>
+            <li>
+              <span>Telegram</span>
+              <span data-metric-telegram>—</span>
+            </li>
+            <li>
+              <span>Main Session Tokens</span>
+              <span data-metric-tokens>—</span>
+            </li>
+            <li>
+              <span>Timers Registered</span>
+              <span data-metric-timers>—</span>
+            </li>
+          </ul>
+          <div class="stack">
+            <a class="btn primary" href="/kanban.html">Open Kanban</a>
+            <a class="btn" href="/dashboard/live-status.json">Live JSON</a>
+          </div>
+        </article>
 
-        <!-- Security Status -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Security Status</span>
-                <span class="card-icon">🛡️</span>
-            </div>
-            <ul class="task-list">
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">HiveFence Network</span>
-                    <span style="color:var(--neon-green)">CONNECTED</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">prompt-guard</span>
-                    <span style="color:var(--neon-green)">v2.6.0 ACTIVE</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">File Permissions</span>
-                    <span style="color:var(--neon-green)">SECURE (600)</span>
-                </li>
-                <li class="task-item">
-                    <span class="task-status status-done"></span>
-                    <span class="task-text">Threats Blocked</span>
-                    <span style="color:var(--neon-green)">0</span>
-                </li>
-            </ul>
-        </div>
+        <article class="card span-6">
+          <div class="kicker">Kanban Summary</div>
+          <div class="metric">
+            <div class="value"><span data-metric-done>—</span></div>
+            <div class="hint">done</div>
+          </div>
+          <div class="metric">
+            <div class="value"><span data-metric-inprog>—</span></div>
+            <div class="hint">in progress</div>
+          </div>
+          <div class="metric">
+            <div class="value"><span data-metric-next>—</span></div>
+            <div class="hint">next</div>
+          </div>
+          <div class="stack">
+            <span class="tag">To execute: create an issue with labels <code>kanban</code>, <code>status:next</code>, <code>run:queue</code>.</span>
+          </div>
+        </article>
 
-        <!-- Next Event -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Next Event</span>
-                <span class="card-icon">⏰</span>
-            </div>
-            <div style="text-align: center; padding: 20px;">
-                <div style="font-size: 2.5em; color: var(--neon-blue);">07:30</div>
-                <div style="color: var(--text-secondary); margin: 10px 0;">Morning Research Protocol</div>
-                <div style="font-size: 0.9em;">RWA/crypto intelligence brief</div>
-            </div>
-        </div>
-    </div>
+        <article class="card span-7">
+          <div class="kicker">Create Task</div>
+          <div class="toolbar">
+            <label class="input" aria-label="Task title template">
+              <span style="opacity: 0.75">⌁</span>
+              <input value="Create a task issue in GitHub (opens new tab)" readonly />
+            </label>
 
-    <div class="links">
-        <a href="http://68.233.108.201:8080/dashboard/">Detailed Dashboard</a>
-        <a href="http://localhost:8081/kanban.html">Kanban Board</a>
-        <a href="dashboard/live-status.json">Live JSON</a>
-    </div>
+            <select data-new-dept aria-label="Department">
+              <option value="eng">Dept B · Engineering</option>
+              <option value="ops">Dept A · Operations</option>
+              <option value="research">Dept C · Research</option>
+              <option value="intern">Dept D · Intern</option>
+            </select>
 
-    <div class="footer">
-        <p>NEXUS AI Execution Engine | Immersible.io</p>
-        <p>Running on OpenClaw 2026.2.2 | Linux ARM64 | 4 OCPU / 24GB RAM</p>
-        <p style="margin-top: 10px;">Last updated: <span id="timestamp"></span></p>
-    </div>
+            <select data-new-prio aria-label="Priority">
+              <option value="medium">priority:medium</option>
+              <option value="high">priority:high</option>
+              <option value="low">priority:low</option>
+            </select>
 
-    <script>
-        function updateTimestamp() {
-            document.getElementById('timestamp').textContent = new Date().toLocaleString('en-IN', {
-                timeZone: 'Asia/Kolkata',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }) + ' IST';
-        }
-        updateTimestamp();
-        setInterval(updateTimestamp, 1000);
-    </script>
-</body>
+            <button class="btn primary" data-new-task type="button">New Task</button>
+          </div>
+
+          <div class="stack">
+            <button class="btn" data-new-quick="eng" type="button">+ Engineering</button>
+            <button class="btn" data-new-quick="ops" type="button">+ Operations</button>
+            <button class="btn" data-new-quick="research" type="button">+ Research</button>
+            <button class="btn" data-new-quick="intern" type="button">+ Intern</button>
+          </div>
+        </article>
+
+        <article class="card span-5">
+          <div class="kicker">Rules</div>
+          <ul class="list">
+            <li><span>Repo visibility</span><span>public</span></li>
+            <li><span>Secrets</span><span>never</span></li>
+            <li><span>Execution label</span><span><code>run:queue</code></span></li>
+            <li><span>Status labels</span><span><code>status:*</code></span></li>
+          </ul>
+          <div class="stack">
+            <a class="btn" href="/dashboard/kanban.json">Kanban JSON</a>
+            <a class="btn" href="https://github.com/nexus-immersible/nexus-immersible.github.io/issues?q=label%3Akanban">Issues</a>
+          </div>
+        </article>
+      </section>
+
+      <footer class="footer">
+        <div>Built for NEXUS. Data refresh is polling JSON files (no auth in browser).</div>
+        <div>Tip: Use labels to route work: <code>dept:eng</code>, <code>dept:ops</code>, <code>dept:research</code>, <code>dept:intern</code>.</div>
+      </footer>
+    </main>
+
+    <script type="module" src="assets/nexus-ui.js?v=1"></script>
+  </body>
 </html>
+

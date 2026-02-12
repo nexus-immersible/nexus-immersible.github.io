@@ -1,379 +1,118 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS Kanban Board</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #eaeaea;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .header {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 2px solid #0f3460;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            color: #e94560;
-            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-        }
-        .header .subtitle {
-            color: #888;
-            margin-top: 10px;
-        }
-        .kanban-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .column {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 15px;
-            min-height: 500px;
-            border-top: 4px solid;
-        }
-        .column.todo { border-top-color: #ffd700; }
-        .column.inprogress { border-top-color: #ff9500; }
-        .column.done { border-top-color: #00d26a; }
-        .column.blocked { border-top-color: #ff3860; }
-        
-        .column-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .column-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .column.todo .column-title { color: #ffd700; }
-        .column.inprogress .column-title { color: #ff9500; }
-        .column.done .column-title { color: #00d26a; }
-        .column.blocked .column-title { color: #ff3860; }
-        
-        .task-count {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
-        }
-        
-        .task-card {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-        .task-card:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        .task-card.priority-high { border-left-color: #ff3860; }
-        .task-card.priority-medium { border-left-color: #ff9500; }
-        .task-card.priority-low { border-left-color: #00d26a; }
-        
-        .task-title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-        .task-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8em;
-            color: #888;
-        }
-        .task-tags {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-        }
-        .tag {
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.7em;
-            text-transform: uppercase;
-        }
-        .tag.skill { background: #4a90d9; }
-        .tag.security { background: #e94560; }
-        .tag.automation { background: #00d26a; }
-        .tag.setup { background: #ff9500; }
-        .tag.content { background: #9b59b6; }
-        
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding: 20px;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            max-width: 1400px;
-            margin: 0 auto 30px;
-        }
-        .stat {
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #e94560;
-        }
-        .stat-label {
-            color: #888;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        
-        .timestamp {
-            text-align: center;
-            color: #666;
-            margin-top: 30px;
-            font-size: 0.85em;
-        }
-        
-        .pulse {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #00d26a;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-            margin-right: 8px;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1><span class="pulse"></span>NEXUS KANBAN BOARD</h1>
-        <div class="subtitle">Real-time Task Management | Night Shift Operations</div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>NEXUS Kanban</title>
+    <meta name="description" content="NEXUS realtime Kanban (GitHub Issues indexed to JSON)." />
+
+    <link rel="icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="assets/nexus-ui.css?v=1" />
+  </head>
+
+  <body data-page="kanban">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="word">NEXUS</div>
+          <div class="sub">kanban</div>
+        </div>
+
+        <nav class="nav" aria-label="Primary">
+          <a class="pill" href="/">
+            <span class="dot ok"></span>
+            Home
+          </a>
+          <a class="pill" href="/kanban.html" aria-current="page">
+            <span class="dot" data-live-dot></span>
+            Kanban
+          </a>
+          <a class="pill" href="/monitor.html">Monitor</a>
+          <a class="pill" href="/council/">Council</a>
+          <a class="pill" href="https://github.com/nexus-immersible/nexus-immersible.github.io/issues?q=label%3Akanban">Issues</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-inner">
+          <h1 class="h-title">Kanban: <span class="accent">Issue-Driven</span> Execution</h1>
+          <p class="h-sub">
+            This board renders <code>dashboard/kanban.json</code> (auto-built from GitHub Issues).
+            For execution, add <code>run:queue</code>.
+          </p>
+          <div class="stack">
+            <span class="tag">Live updated: <span data-live-updated>—</span> IST</span>
+            <span class="tag">Kanban index: <span data-kanban-updated>—</span> IST</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="Filters">
+        <label class="input" aria-label="Search">
+          <span style="opacity: 0.75">⌕</span>
+          <input placeholder="Search title, #id, labels…" data-search />
+        </label>
+
+        <select data-filter-dept aria-label="Department filter">
+          <option value="all">dept:all</option>
+          <option value="eng">dept:eng</option>
+          <option value="ops">dept:ops</option>
+          <option value="research">dept:research</option>
+          <option value="intern">dept:intern</option>
+          <option value="nexus">dept:nexus</option>
+        </select>
+
+        <select data-filter-prio aria-label="Priority filter">
+          <option value="all">priority:all</option>
+          <option value="high">priority:high</option>
+          <option value="medium">priority:medium</option>
+          <option value="low">priority:low</option>
+        </select>
+
+        <select data-new-dept aria-label="New task department">
+          <option value="eng">New: Dept B · Engineering</option>
+          <option value="ops">New: Dept A · Operations</option>
+          <option value="research">New: Dept C · Research</option>
+          <option value="intern">New: Dept D · Intern</option>
+        </select>
+
+        <select data-new-prio aria-label="New task priority">
+          <option value="medium">priority:medium</option>
+          <option value="high">priority:high</option>
+          <option value="low">priority:low</option>
+        </select>
+
+        <button class="btn primary" data-new-task type="button">New Task</button>
+      </section>
+
+      <section class="board" data-board aria-label="Kanban board"></section>
+
+      <footer class="footer">
+        <div>Tip: click a card to open details. Use “Open on GitHub” to edit labels/status.</div>
+      </footer>
+    </main>
+
+    <div class="dialog" data-dialog role="dialog" aria-modal="true" aria-label="Task details">
+      <div class="backdrop" aria-hidden="true"></div>
+      <div class="panel">
+        <div class="row">
+          <h3 data-dialog-title>Task</h3>
+          <div class="stack">
+            <a class="btn" data-dialog-open target="_blank" rel="noopener noreferrer">Open on GitHub</a>
+            <button class="btn danger" data-dialog-close type="button">Close</button>
+          </div>
+        </div>
+        <p class="h-sub" data-dialog-meta style="margin-top: 8px">—</p>
+        <pre data-dialog-body style="margin-top: 14px"></pre>
+      </div>
     </div>
-    
-    <div class="stats-bar">
-        <div class="stat">
-            <div class="stat-value">15</div>
-            <div class="stat-label">Tasks Done</div>
-        </div>
-        <div class="stat">
-            <div class="stat-value">3</div>
-            <div class="stat-label">In Progress</div>
-        </div>
-        <div class="stat">
-            <div class="stat-value">4</div>
-            <div class="stat-label">Pending</div>
-        </div>
-        <div class="stat">
-            <div class="stat-value">$0.02</div>
-            <div class="stat-label">Cost Used</div>
-        </div>
-    </div>
-    
-    <div class="kanban-board">
-        <!-- TO DO Column -->
-        <div class="column todo">
-            <div class="column-header">
-                <span class="column-title">📋 To Do</span>
-                <span class="task-count">4</span>
-            </div>
-            
-            <div class="task-card priority-high">
-                <div class="task-title">Create GitHub Account</div>
-                <div class="task-meta">
-                    <span>Manual step required</span>
-                    <span>⏰ Waiting</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag setup">Setup</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-high">
-                <div class="task-title">Configure Gmail Automation</div>
-                <div class="task-meta">
-                    <span>Needs credentials</span>
-                    <span>⏰ Waiting</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag setup">Setup</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-medium">
-                <div class="task-title">Connect Notion API</div>
-                <div class="task-meta">
-                    <span>For brief uploads</span>
-                    <span>⏰ Waiting</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag automation">Automation</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-low">
-                <div class="task-title">Activate SuperMemory</div>
-                <div class="task-meta">
-                    <span>Optional enhancement</span>
-                    <span>⏰ Backlog</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag skill">Skill</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- IN PROGRESS Column -->
-        <div class="column inprogress">
-            <div class="column-header">
-                <span class="column-title">⚡ In Progress</span>
-                <span class="task-count">3</span>
-            </div>
-            
-            <div class="task-card priority-high">
-                <div class="task-title">Dashboard Auto-Updates</div>
-                <div class="task-meta">
-                    <span>Every 5 minutes</span>
-                    <span>🔄 Active</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag automation">Automation</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-medium">
-                <div class="task-title">System Monitoring</div>
-                <div class="task-meta">
-                    <span>Continuous</span>
-                    <span>🔄 Active</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag security">Security</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-medium">
-                <div class="task-title">Activity Stream Logging</div>
-                <div class="task-meta">
-                    <span>Real-time</span>
-                    <span>🔄 Active</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag automation">Logging</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- DONE Column -->
-        <div class="column done">
-            <div class="column-header">
-                <span class="column-title">✅ Done</span>
-                <span class="task-count">15</span>
-            </div>
-            
-            <div class="task-card priority-high">
-                <div class="task-title">Install 5 Skills</div>
-                <div class="task-meta">
-                    <span>All tested & active</span>
-                    <span>✓ 03:06</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag skill">Skill</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-high">
-                <div class="task-title">Deploy Dashboard</div>
-                <div class="task-meta">
-                    <span>Cyberpunk style</span>
-                    <span>✓ 03:15</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag automation">Dashboard</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-high">
-                <div class="task-title">Create Kanban Board</div>
-                <div class="task-meta">
-                    <span>Visual task tracking</span>
-                    <span>✓ 03:22</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag automation">Dashboard</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-medium">
-                <div class="task-title">Security Hardening</div>
-                <div class="task-meta">
-                    <span>Audit passed</span>
-                    <span>✓ 03:06</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag security">Security</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-medium">
-                <div class="task-title">Token Optimization</div>
-                <div class="task-meta">
-                    <span>42% savings</span>
-                    <span>✓ 03:12</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag automation">Cost</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-medium">
-                <div class="task-title">Morning Brief Research</div>
-                <div class="task-meta">
-                    <span>Synthesized & saved</span>
-                    <span>✓ 02:58</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag content">Content</span>
-                </div>
-            </div>
-            
-            <div class="task-card priority-low">
-                <div class="task-title">Documentation Suite</div>
-                <div class="task-meta">
-                    <span>5 guides created</span>
-                    <span>✓ 03:19</span>
-                </div>
-                <div class="task-tags">
-                    <span class="tag setup">Docs</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="timestamp">
-        Last updated: 2026-02-04 03:22 IST | Auto-refresh: Every 5 min | NEXUS Night Shift Active
-    </div>
-</body>
+
+    <script type="module" src="assets/nexus-ui.js?v=1"></script>
+  </body>
 </html>
+
