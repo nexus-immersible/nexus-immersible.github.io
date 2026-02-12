@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T09:24:20.444603Z",
+  "generatedAt": "2026-02-12T09:29:50.373286Z",
   "health": "ok",
   "system": {
     "health": "ok",
@@ -29,7 +29,7 @@
       {
         "unit": "nexus-ops-sync.timer",
         "activates": "nexus-ops-sync.service",
-        "next": "2026-02-12T09:39:20.319170Z",
+        "next": "2026-02-12T09:39:20.319169Z",
         "last": "2026-02-12T09:24:20.309038Z"
       },
       {
@@ -60,7 +60,7 @@
         "unit": "nexus-pages-status.timer",
         "activates": "nexus-pages-status.service",
         "next": null,
-        "last": "2026-02-12T09:24:20.389410Z"
+        "last": "2026-02-12T09:29:50.309025Z"
       }
     ]
   },
