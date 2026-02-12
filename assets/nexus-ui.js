@@ -24,6 +24,14 @@ function $(sel, el = document) {
   return el.querySelector(sel);
 }
 
+function $all(sel, el = document) {
+  return Array.from(el.querySelectorAll(sel));
+}
+
+function setTextAll(sel, text) {
+  for (const el of $all(sel)) el.textContent = text;
+}
+
 function escapeHtml(s) {
   return String(s)
     .replaceAll("&", "&amp;")
@@ -136,8 +144,7 @@ function renderLiveStatus(live) {
   const updated = live?.generatedAt || live?.generated_at || null;
   const label = updated ? formatIST(updated) : "—";
 
-  const lastEl = $("[data-live-updated]");
-  if (lastEl) lastEl.textContent = label;
+  setTextAll("[data-live-updated]", label);
 
   // topbar dot
   const dot = $("[data-live-dot]");
@@ -145,23 +152,57 @@ function renderLiveStatus(live) {
   setDot(dot, lvl);
 
   // metrics
-  const gatewayEl = $("[data-metric-gateway]");
-  const telegramEl = $("[data-metric-telegram]");
-  const tokensEl = $("[data-metric-tokens]");
-  const timersEl = $("[data-metric-timers]");
-  const nightEl = $("[data-metric-night]");
-
   const gatewayActive = !!live?.system?.services?.gateway_active;
+  const nodeActive = !!live?.system?.services?.node_active;
+  const ollamaActive = !!live?.system?.services?.ollama_active;
   const telegramOk = !!live?.system?.telegram?.ok;
   const tokens = live?.system?.sessions?.main?.totalTokens ?? live?.system?.sessions?.main?.total_tokens;
   const timers = live?.system?.timers?.length ?? 0;
   const night = live?.nightShift?.latestArtifact ? "active" : "idle";
 
-  if (gatewayEl) gatewayEl.textContent = gatewayActive ? "ONLINE" : "OFFLINE";
-  if (telegramEl) telegramEl.textContent = telegramOk ? "OK" : "DEGRADED";
-  if (tokensEl) tokensEl.textContent = typeof tokens === "number" ? String(tokens) : "n/a";
-  if (timersEl) timersEl.textContent = String(timers);
-  if (nightEl) nightEl.textContent = night;
+  setTextAll("[data-metric-gateway]", gatewayActive ? "ONLINE" : "OFFLINE");
+  setTextAll("[data-metric-node]", nodeActive ? "ONLINE" : "OFFLINE");
+  setTextAll("[data-metric-ollama]", ollamaActive ? "ONLINE" : "OFFLINE");
+  setTextAll("[data-metric-telegram]", telegramOk ? "OK" : "DEGRADED");
+  setTextAll("[data-metric-tokens]", typeof tokens === "number" ? String(tokens) : "n/a");
+  setTextAll("[data-metric-timers]", String(timers));
+  setTextAll("[data-metric-night]", night);
+}
+
+function renderMonitor(live) {
+  if (!live) return;
+  setTextAll("[data-mon-health]", String(live?.health || live?.system?.health || "—").toUpperCase());
+  setTextAll("[data-mon-host]", live?.system?.host || "—");
+  setTextAll("[data-mon-updated]", live?.generatedAt ? formatIST(live.generatedAt) : "—");
+
+  const s = live?.system?.services || {};
+  setTextAll("[data-mon-gateway]", s.gateway_active ? "ACTIVE" : "OFFLINE");
+  setTextAll("[data-mon-node]", s.node_active ? "ACTIVE" : "OFFLINE");
+  setTextAll("[data-mon-ollama]", s.ollama_active ? "ACTIVE" : "OFFLINE");
+  setTextAll("[data-mon-telegram]", live?.system?.telegram?.ok ? "OK" : "DEGRADED");
+
+  const sess = live?.system?.sessions?.main || {};
+  const total = sess.totalTokens ?? sess.total_tokens;
+  const ctx = sess.contextTokens ?? sess.context_tokens;
+  setTextAll("[data-mon-tokens-total]", typeof total === "number" ? String(total) : "n/a");
+  setTextAll("[data-mon-tokens-ctx]", typeof ctx === "number" ? String(ctx) : "n/a");
+
+  setTextAll("[data-mon-night]", live?.nightShift?.latestArtifact ? "ACTIVE" : "IDLE");
+  setTextAll("[data-mon-night-artifact]", live?.nightShift?.latestArtifact || "—");
+
+  const timers = Array.isArray(live?.system?.timers) ? live.system.timers : [];
+  const tbl = $("[data-mon-timers]");
+  if (tbl) {
+    tbl.innerHTML = timers
+      .map((t) => {
+        const unit = escapeHtml(t.unit || "");
+        const activates = escapeHtml(t.activates || "");
+        const next = escapeHtml(t.next ? formatIST(t.next) : "—");
+        const last = escapeHtml(t.last ? formatIST(t.last) : "—");
+        return `<tr><td class="mono">${unit}</td><td class="mono">${activates}</td><td class="mono">${next}</td><td class="mono">${last}</td></tr>`;
+      })
+      .join("");
+  }
 }
 
 function normalizeTask(raw) {
@@ -421,11 +462,38 @@ function initKanban() {
   setInterval(refresh, 10000);
 }
 
+function initMonitor() {
+  bindDialog();
+  bindNewTaskButtons();
+
+  const refresh = async () => {
+    try {
+      const live = await fetchJsonNoCache(LIVE_URL, { timeoutMs: 7000 });
+      renderMonitor(live);
+      renderLiveStatus(live);
+    } catch (e) {
+      console.warn("monitor fetch failed", String(e?.message || e));
+    }
+
+    try {
+      const kanban = await fetchJsonNoCache(KANBAN_URL, { timeoutMs: 7000 });
+      renderIndexKanbanMeta(kanban);
+      const el = $("[data-kanban-updated]");
+      if (el) el.textContent = kanban?.generatedAt ? formatIST(kanban.generatedAt) : "—";
+    } catch (e) {
+      console.warn("kanban fetch failed", String(e?.message || e));
+    }
+  };
+
+  refresh();
+  setInterval(refresh, 10000);
+}
+
 function main() {
   const page = document.body?.dataset?.page || "index";
   if (page === "kanban") initKanban();
+  else if (page === "monitor") initMonitor();
   else initIndex();
 }
 
 main();
-

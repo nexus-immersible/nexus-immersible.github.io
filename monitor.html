@@ -1,50 +1,166 @@
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>NEXUS Monitor</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Courier,monospace;background:linear-gradient(135deg,#0a0e27,#1a1f3a);color:#00ff88;min-height:100vh;padding:20px}
-.container{max-width:1400px;margin:0 auto}
-h1{font-size:3em;text-align:center;margin-bottom:30px;letter-spacing:0.2em;text-shadow:0 0 20px #00ff88}
-.pills{display:flex;gap:15px;justify-center;flex-wrap:wrap;margin-bottom:40px}
-.pill{background:rgba(0,255,136,0.1);border:2px solid #00ff88;border-radius:25px;padding:8px 20px;font-size:0.9em}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:30px}
-.card{background:rgba(10,14,39,0.8);border:1px solid #00ff88;border-radius:15px;padding:25px}
-.card-title{font-size:0.8em;color:#888;margin-bottom:10px;text-transform:uppercase}
-.card-value{font-size:2.5em;font-weight:bold;margin-bottom:10px}
-.list-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(0,255,136,0.1)}
-.btn{background:transparent;border:2px solid #00ff88;color:#00ff88;padding:12px 30px;border-radius:8px;text-decoration:none;display:inline-block;transition:0.3s}
-.btn:hover{background:rgba(0,255,136,0.1)}
-</style>
-</head><body>
-<div class="container">
-<h1>NEXUS LIVE MONITOR</h1>
-<div class="pills">
-<div class="pill">🟢 GATEWAY ONLINE</div>
-<div class="pill">🤖 QWEN 2.5:14B ACTIVE</div>
-<div class="pill">💬 TELEGRAM READY</div>
-</div>
-<div class="grid">
-<div class="card"><div class="card-title">💰 Cost (Est.)</div><div class="card-value">$0.00</div></div>
-<div class="card"><div class="card-title">📊 Messages</div><div class="card-value" id="msgs">--</div></div>
-<div class="card"><div class="card-title">⚡ Model</div><div class="card-value" style="font-size:1.2em">qwen2.5:14b-instruct</div></div>
-<div class="card"><div class="card-title">⏱️ Uptime</div><div class="card-value" id="uptime">00:00:00</div></div>
-</div>
-<div class="card"><div class="card-title">🔒 Security</div>
-<div class="list-item"><span>CVE-2026-25253</span><span style="color:#00ff88">✅ PATCHED</span></div>
-<div class="list-item"><span>Model Integrity</span><span style="color:#00ff88">✅ VERIFIED</span></div>
-<div class="list-item"><span>Only Qwen (no DeepSeek)</span><span style="color:#00ff88">✅ CONFIRMED</span></div>
-</div>
-<div style="margin-top:40px;display:flex;gap:15px;justify-content:center">
-<a href="http://68.233.108.201:8080" class="btn">Gateway Dashboard</a>
-<a href="https://nexus-immersible.github.io/kanban.html" class="btn">Kanban</a>
-<a href="https://nexus-immersible.github.io/" class="btn">Main Dashboard</a>
-</div>
-</div>
-<script>
-let start=Date.now();
-setInterval(()=>{
-let e=Date.now()-start,h=Math.floor(e/36e5).toString().padStart(2,"0"),m=Math.floor(e%36e5/6e4).toString().padStart(2,"0"),s=Math.floor(e%6e4/1e3).toString().padStart(2,"0");
-document.getElementById("uptime").textContent=`${h}:${m}:${s}`;
-},1e3);
-</script>
-</body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>NEXUS Monitor</title>
+    <meta name="description" content="NEXUS system monitor (published telemetry from VPS)." />
+
+    <link rel="icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="assets/nexus-ui.css?v=1" />
+    <style>
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .table th,
+      .table td {
+        padding: 10px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: left;
+        white-space: nowrap;
+      }
+      .table th {
+        color: var(--muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 11px;
+      }
+      .mono {
+        font-family: var(--mono);
+      }
+    </style>
+  </head>
+
+  <body data-page="monitor">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="word">NEXUS</div>
+          <div class="sub">monitor</div>
+        </div>
+
+        <nav class="nav" aria-label="Primary">
+          <a class="pill" href="/">
+            <span class="dot ok"></span>
+            Home
+          </a>
+          <a class="pill" href="/kanban.html">
+            <span class="dot" data-live-dot></span>
+            Kanban
+          </a>
+          <a class="pill" href="/monitor.html" aria-current="page">
+            <span class="dot" data-live-dot></span>
+            Monitor
+          </a>
+          <a class="pill" href="/council/">Council</a>
+          <a class="pill" href="https://github.com/nexus-immersible/nexus-immersible.github.io">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-inner">
+          <h1 class="h-title">System Monitor: <span class="accent">Live</span></h1>
+          <p class="h-sub">
+            Rendered from <code>dashboard/live-status.json</code>. This page is public: do not add secrets.
+          </p>
+          <div class="stack">
+            <span class="tag">Updated: <span data-mon-updated>—</span> IST</span>
+            <span class="tag">Health: <span data-mon-health>—</span></span>
+            <span class="tag">Host: <span data-mon-host>—</span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid" aria-label="Monitor">
+        <article class="card span-6">
+          <div class="kicker">Services</div>
+          <ul class="list">
+            <li><span>Gateway</span><span data-mon-gateway>—</span></li>
+            <li><span>Node</span><span data-mon-node>—</span></li>
+            <li><span>Ollama</span><span data-mon-ollama>—</span></li>
+            <li><span>Telegram</span><span data-mon-telegram>—</span></li>
+          </ul>
+          <div class="stack">
+            <span class="tag">Live dot is derived from health.</span>
+          </div>
+        </article>
+
+        <article class="card span-6">
+          <div class="kicker">Sessions</div>
+          <div class="metric">
+            <div class="value mono"><span data-mon-tokens-total>—</span></div>
+            <div class="hint">total tokens (main session)</div>
+          </div>
+          <div class="metric">
+            <div class="value mono"><span data-mon-tokens-ctx>—</span></div>
+            <div class="hint">context tokens (main session)</div>
+          </div>
+          <div class="stack">
+            <span class="tag">Tip: if tokens bloat, start a new session key or run a compaction step.</span>
+          </div>
+        </article>
+
+        <article class="card span-6">
+          <div class="kicker">Night Shift</div>
+          <div class="metric">
+            <div class="value"><span data-mon-night>—</span></div>
+            <div class="hint">latest artifact</div>
+          </div>
+          <div class="stack">
+            <span class="tag mono" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"
+              ><span data-mon-night-artifact>—</span></span
+            >
+          </div>
+        </article>
+
+        <article class="card span-6">
+          <div class="kicker">Quick Links</div>
+          <div class="stack">
+            <a class="btn primary" href="/kanban.html">Open Kanban</a>
+            <a class="btn" href="/dashboard/live-status.json" target="_blank" rel="noopener noreferrer">Live JSON</a>
+            <a
+              class="btn"
+              href="https://github.com/nexus-immersible/nexus-immersible.github.io/issues?q=label%3Akanban"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Kanban Issues</a
+            >
+          </div>
+        </article>
+
+        <article class="card span-12">
+          <div class="kicker">Timers</div>
+          <p class="h-sub">Filtered to nexus/openclaw timers only.</p>
+          <div style="overflow: auto; margin-top: 12px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px">
+            <table class="table" aria-label="Timers table">
+              <thead>
+                <tr>
+                  <th>Unit</th>
+                  <th>Activates</th>
+                  <th>Next</th>
+                  <th>Last</th>
+                </tr>
+              </thead>
+              <tbody data-mon-timers></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <footer class="footer">
+        <div>Refresh cadence: ~10s polling.</div>
+      </footer>
+    </main>
+
+    <script type="module" src="assets/nexus-ui.js?v=2"></script>
+  </body>
+</html>
