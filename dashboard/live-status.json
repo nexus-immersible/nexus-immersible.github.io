@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T10:07:20.372013Z",
+  "generatedAt": "2026-02-12T10:12:20.376405Z",
   "health": "ok",
   "system": {
     "health": "ok",
@@ -23,8 +23,8 @@
       {
         "unit": "nexus-ops-sync.timer",
         "activates": "nexus-ops-sync.service",
-        "next": "2026-02-12T10:11:20.319163Z",
-        "last": "2026-02-12T09:56:20.309036Z"
+        "next": "2026-02-12T10:27:20.326100Z",
+        "last": "2026-02-12T10:12:20.309140Z"
       },
       {
         "unit": "nexus-git-sync.timer",
@@ -60,7 +60,7 @@
         "unit": "nexus-pages-status.timer",
         "activates": "nexus-pages-status.service",
         "next": null,
-        "last": "2026-02-12T10:07:20.309077Z"
+        "last": "2026-02-12T10:12:20.326395Z"
       }
     ]
   },
