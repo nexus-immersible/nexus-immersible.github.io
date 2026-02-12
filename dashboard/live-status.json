@@ -1,14 +1,27 @@
 {
   "schemaVersion": 1,
-  "generatedAt": null,
-  "health": "warn",
+  "generatedAt": "2026-02-12T07:53:39.273301Z",
+  "health": "ok",
   "system": {
-    "health": "warn",
-    "telegram": { "ok": false },
-    "services": { "gateway_active": false },
-    "sessions": { "main": { "totalTokens": null, "contextTokens": null } },
+    "health": "ok",
+    "host": "openclaw-main",
+    "telegram": {
+      "ok": true
+    },
+    "services": {
+      "gateway_active": true,
+      "node_active": true,
+      "ollama_active": true
+    },
+    "sessions": {
+      "main": {
+        "totalTokens": 184617,
+        "contextTokens": 24000
+      }
+    },
     "timers": []
   },
-  "nightShift": { "latestArtifact": null }
+  "nightShift": {
+    "latestArtifact": "/home/ubuntu/nexus/skills/inbox/skills-20260211T210051Z.md"
+  }
 }
-
