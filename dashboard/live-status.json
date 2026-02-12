@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-02-12T07:53:39.273301Z",
+  "generatedAt": "2026-02-12T08:05:49.358720Z",
   "health": "ok",
   "system": {
     "health": "ok",
@@ -19,7 +19,44 @@
         "contextTokens": 24000
       }
     },
-    "timers": []
+    "timers": [
+      {
+        "unit": "nexus-ops-sync.timer",
+        "activates": "nexus-ops-sync.service",
+        "next": "2026-02-12T08:19:20.328103Z",
+        "last": "2026-02-12T08:04:20.308799Z"
+      },
+      {
+        "unit": "nexus-git-sync.timer",
+        "activates": "nexus-git-sync.service",
+        "next": "2026-02-12T08:30:00Z",
+        "last": "2026-02-12T07:30:51.844799Z"
+      },
+      {
+        "unit": "nexus-night-shift.timer",
+        "activates": "nexus-night-shift.service",
+        "next": "2026-02-12T21:00:00Z",
+        "last": "2026-02-11T21:00:51.844795Z"
+      },
+      {
+        "unit": "nexus-night-push.timer",
+        "activates": "nexus-night-push.service",
+        "next": "2026-02-12T21:40:00Z",
+        "last": "2026-02-11T21:40:51.844821Z"
+      },
+      {
+        "unit": "morning-miracle.timer",
+        "activates": "morning-miracle.service",
+        "next": "2026-02-13T01:30:00Z",
+        "last": "2026-02-12T01:30:51.845007Z"
+      },
+      {
+        "unit": "nexus-morning-brief.timer",
+        "activates": "nexus-morning-brief.service",
+        "next": "2026-02-13T01:30:00Z",
+        "last": "2026-02-12T01:30:51.844862Z"
+      }
+    ]
   },
   "nightShift": {
     "latestArtifact": "/home/ubuntu/nexus/skills/inbox/skills-20260211T210051Z.md"
